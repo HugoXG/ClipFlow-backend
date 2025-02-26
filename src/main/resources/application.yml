@@ -1,0 +1,32 @@
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/${DB_NAME}?useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: ${DB_PASSWORD}
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+  mail:
+    host: smtp.163.com
+    username: ${163EMAIL_NAME}
+    password: ${163EMAIL_PASSWORD}
+    port: 465
+    properties:
+      from: ${163EMAIL_NAME}
+      mail:
+        debug: true
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+
