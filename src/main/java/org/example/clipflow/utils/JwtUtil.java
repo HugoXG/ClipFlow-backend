@@ -9,13 +9,13 @@ import java.util.Date;
 
 public class JwtUtil {
     private static final long EXPIRE = 60 * 60 * 1000 * 24; //token过期时间，System.currentTimeMillis()为毫秒，1小时为60*60*1000
-    private static final String SECRET_KEY = "imitate-lucky-journey";
+    private static final String SECRET_KEY = "ClipFlow";
     public static String getJwtToken(long id, String nickName) {
 
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setHeaderParam("alg", "HS256")
-                .setSubject("guli-user")
+                .setSubject("ClipFlow - user")
 
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))

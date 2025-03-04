@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.clipflow.entity.user.User;
 import org.example.clipflow.entity.vo.*;
 
+import java.io.IOException;
+
 public interface UserService extends IService<User> {
     /**
      * 注册
@@ -42,7 +44,7 @@ public interface UserService extends IService<User> {
      * @param updateUserVO VO
      * @param userId
      */
-    void updateUser(UpdateUserVO updateUserVO, long userId);
+    void updateUser(UpdateUserVO updateUserVO, long userId) throws IOException;
 
     /**
      * 分页获取关注列表

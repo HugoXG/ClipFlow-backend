@@ -22,7 +22,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @Async
     public void send(String email, String context) {
-        simpleMailMessage.setSubject("模仿-幸运日");
+        simpleMailMessage.setSubject("ClipFlow");
         simpleMailMessage.setFrom(fromName);
         simpleMailMessage.setText(context);
         simpleMailMessage.setTo(email);

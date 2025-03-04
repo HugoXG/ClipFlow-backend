@@ -43,7 +43,10 @@ public class LoginServiceImpl implements LoginService {
         //控制浏览器对响应内容的缓存行为，no-store表示不允许缓存任何响应内容，no-cache表示不允许直接使用缓存
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");//设置响应的内容类型为JPEG图像
+
         BufferedImage bufferedImage = captchaService.getCaptcha(uuId);
+
+        // 将图像写入响应的输出流中
         ServletOutputStream outputStream = response.getOutputStream();
         ImageIO.write(bufferedImage, "jpeg", outputStream);
         IOUtils.closeQuietly(outputStream);
@@ -59,6 +62,7 @@ public class LoginServiceImpl implements LoginService {
         if (ObjectUtils.isEmpty(email) || ObjectUtils.isEmpty(code)) {
             throw new BaseException("邮箱或验证码为空");
         }
+
         Object o = redisCaptchaUtil.get(RedisConstant.EMAIL_CODE + email);
         if (!code.toString().equals(o)) {
             throw new BaseException("验证码错误");

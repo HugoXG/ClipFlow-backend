@@ -32,8 +32,9 @@ public class CaptchaServiceImpl extends ServiceImpl<CaptchaMapper, Captcha> impl
     }
     @Override
     public BufferedImage getCaptcha(String uuId) {
-        String code = producer.createText();
+        // 调用google依赖kaptcha生成验证码
         Captcha captcha = new Captcha();
+        String code = producer.createText();
         captcha.setUuid(uuId);
         captcha.setCode(code);
         captcha.setExpireTime(DateUtil.addDateMinutes(new Date(), 5));
@@ -58,7 +59,7 @@ public class CaptchaServiceImpl extends ServiceImpl<CaptchaMapper, Captcha> impl
         }
 
         String emailCode = getSixCode();
-        redisCaptchaUtil.set(RedisConstant.EMAIL_CODE+captcha.getEmail(), emailCode, RedisConstant.EMAIL_CODE_TIME);
+        redisCaptchaUtil.set(RedisConstant.EMAIL_CODE + captcha.getEmail(), emailCode, RedisConstant.EMAIL_CODE_TIME);
         emailService.send(captcha.getEmail(), "注册验证码："+emailCode+"，验证码5分钟内有效。");
         return true;
     }

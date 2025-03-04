@@ -25,15 +25,18 @@ public class Interceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 跨域请求会首先发送OPTIONS请求  预检请求（preflight request）
         if (request.getMethod().equals("OPTIONS")) {
             return true;
         }
 
+        // 获取token
         if (JwtUtil.isEmpty(request)) {
             response(R.error().setMessage("请登录后再操作"), response);
             return false;
         }
 
+        // 验证token
         final Long userId = JwtUtil.getUserId(request);
         final User user = userService.getById(userId);
 
@@ -41,10 +44,19 @@ public class Interceptor implements HandlerInterceptor {
             response(R.error().setMessage("用户不存在"), response);
             return false;
         }
+
+        // 设置用户信息
         UserHolder.setUserId(userId);
         return true;
     }
 
+    /**
+     * 响应
+     *
+     * @param r        数据
+     * @param response 响应
+     * @throws IOException 错误
+     */
     private void response(R r, HttpServletResponse response) throws IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Cache-Control", "no-cache");

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.example.clipflow.constant.AuditStatus;
 import org.example.clipflow.constant.RedisConstant;
 import org.example.clipflow.entity.response.AuditResponse;
 import org.example.clipflow.entity.user.Favorites;
@@ -21,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,14 +57,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BaseException("验证码错误");
         }
 
+        // 创建用户
         User user = new User();
-        user.setNickName(registerVO.getNickName());
-        user.setEmail(registerVO.getEmail());
-        user.setDescription("这个人很懒...");
-        user.setPassword(EncryptionUtil.encrypt(registerVO.getPassword()));
+        user.setNickName(registerVO.getNickName()); // 昵称
+        user.setEmail(registerVO.getEmail()); // 邮箱
+        user.setDescription("这个人很懒..."); // 描述
+        user.setPassword(EncryptionUtil.encrypt(registerVO.getPassword())); // 密码
         this.save(user);
 
-        Favorites favorites = new Favorites();
+        Favorites favorites = new Favorites(); // 创建默认收藏夹
         favorites.setName("默认收藏夹");
         favorites.setUserId(user.getId());
         favoritesService.save(favorites);
@@ -137,7 +140,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         StringBuilder stringBuilder = new StringBuilder();
         // 对比新旧用户昵称和描述并进行拼接
         if (!oldUserPO.getNickName().equals(updateUserVO.getNickName())) {
-            stringBuilder.append("昵称：").append(updateUserVO.getNickName()).append("\n");
+            stringBuilder.append("昵称：").append(updateUserVO.getNickName()).append(";");
         }
         if (!oldUserPO.getDescription().equals(updateUserVO.getDescription())) {
             stringBuilder.append("描述：").append(updateUserVO.getDescription());
@@ -145,11 +148,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 提交审核昵称和描述
         if (!stringBuilder.isEmpty()) {
             AuditResponse auditResponse = textAuditService.audit(stringBuilder.toString());
-            if (!auditResponse.getState().equals("Success")) {
-                throw new BaseException("审核失败");
-            }
-            if (auditResponse.getResult() != 0) {
-                throw new BaseException("审核未通过，昵称或描述包含违规内容：" + auditResponse.getMsg());
+            if (!auditResponse.getAuditStatus().equals(AuditStatus.SUCCESS)) {
+                throw new BaseException("审核失败，昵称或描述包含" + auditResponse.getMsg() + "内容");
             }
         }
         // todo 审核头像

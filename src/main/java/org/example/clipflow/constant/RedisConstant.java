@@ -10,5 +10,5 @@ public class RedisConstant {
     public static String USER_FOLLOW = "user:follow:";
     public static String FOLLOW_USER = "follow:user:";
     public static String USER_FAN = "user:fan:";
-    public static long EMAIL_CODE_TIME = 300L;
+    public static long EMAIL_CODE_TIME = 300L; // 5分钟
 }

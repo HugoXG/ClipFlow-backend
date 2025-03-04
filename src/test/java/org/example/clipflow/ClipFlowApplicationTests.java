@@ -1,7 +1,7 @@
 package org.example.clipflow;
 
 import jakarta.annotation.Resource;
-import org.example.clipflow.config.TencentConfig;
+import org.example.clipflow.config.QiNiuConfig;
 import org.example.clipflow.utils.RedisCaptchaUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class ClipFlowApplicationTests {
     @Resource
-    TencentConfig tencentConfig;
+    QiNiuConfig qiNiuConfig;
     @Resource
     RedisCaptchaUtil redisCaptchaUtil;
 

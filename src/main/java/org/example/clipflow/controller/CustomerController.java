@@ -11,6 +11,8 @@ import org.example.clipflow.utils.R;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Slf4j
 @RestController
 @RequestMapping("/luckyjourney/customer")
@@ -71,7 +73,7 @@ public class CustomerController {
      * @return JSON
      */
     @PutMapping
-    public R updateUser(@Validated @RequestBody UpdateUserVO updateUserVO) {
+    public R updateUser(@Validated @RequestBody UpdateUserVO updateUserVO) throws IOException {
         log.info("接口：修改用户信息");
         long userId = UserHolder.getUserId();
         userService.updateUser(updateUserVO, userId);
