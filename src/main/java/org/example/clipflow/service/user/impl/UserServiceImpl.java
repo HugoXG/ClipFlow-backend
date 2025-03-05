@@ -12,6 +12,8 @@ import org.example.clipflow.entity.user.User;
 import org.example.clipflow.entity.vo.*;
 import org.example.clipflow.exception.BaseException;
 import org.example.clipflow.mapper.UserMapper;
+import org.example.clipflow.service.FileService;
+import org.example.clipflow.service.audit.ImageAuditService;
 import org.example.clipflow.service.audit.TextAuditService;
 import org.example.clipflow.service.user.FavoritesService;
 import org.example.clipflow.service.user.FollowService;
@@ -33,15 +35,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final FavoritesService favoritesService;
     private final FollowService followService;
     private final TextAuditService textAuditService;
+    private final ImageAuditService imageAuditService;
+    private final FileService fileService;
 
     public UserServiceImpl(RedisCaptchaUtil redisCaptchaUtil,
                            FavoritesService favoritesService,
                            FollowService followService,
-                           TextAuditService textAuditService) {
+                           TextAuditService textAuditService,
+                           ImageAuditService imageAuditService,
+                           FileService fileService) {
         this.redisCaptchaUtil = redisCaptchaUtil;
         this.favoritesService = favoritesService;
         this.followService = followService;
         this.textAuditService = textAuditService;
+        this.imageAuditService = imageAuditService;
+        this.fileService = fileService;
     }
 
     @Override
@@ -152,8 +160,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 throw new BaseException("审核失败，昵称或描述包含" + auditResponse.getMsg() + "内容");
             }
         }
-        // todo 审核头像
+        // 审核头像
         if (!oldUserPO.getAvatar().equals(updateUserVO.getAvatar())) {
+            imageAuditService.audit(fileService.getById(updateUserVO.getAvatar()).getFileKey());
 
         }
         BeanUtils.copyProperties(updateUserVO, oldUserPO);

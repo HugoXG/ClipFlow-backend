@@ -48,7 +48,6 @@ public class TextAuditService extends AbstractAuditService<String, AuditResponse
 
         String body = textBody.replace("${text}", text);
         String method = "POST";
-        // 获取token
         final String token = qiNiuConfig.getToken(textUrl, method, body, contentType);
         StringMap header = new StringMap();
         header.put("Host", "ai.qiniuapi.com");
